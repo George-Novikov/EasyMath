@@ -10,7 +10,7 @@ namespace EasyMath_v1 {
             this.Width = 700;
             this.BackColor = Color.LightGoldenrodYellow;
             this.Text = "EasyCalc";
-
+            
             int a = 0;
             int b = 0;
             List<string> memory = new List<string>();
@@ -40,7 +40,6 @@ namespace EasyMath_v1 {
             formulaCB.Items.Add("Square of difference: (a-b)\u00B2");
             formulaCB.Items.Add("Sum of squares: a\u00B2+b\u00B2");
             formulaCB.Items.Add("Difference of squares: a\u00B2-b\u00B2");
-            
             this.Controls.Add(formulaCB);
 
             FormulaLabel fLabel = new FormulaLabel();
@@ -53,6 +52,7 @@ namespace EasyMath_v1 {
             this.Controls.Add(fLabel);
 
             MyButton enterButton = new MyButton();
+            //this.AcceptButton = enterButton;
             enterButton.Text = "Enter";
             enterButton.Height = 70;
             enterButton.Width = 200;
@@ -64,6 +64,7 @@ namespace EasyMath_v1 {
             enterButton.MouseLeave += entBut_MouseLeave;
             this.Controls.Add(enterButton);
             enterButton.Click += enterButton_Click;
+            enterButton.KeyDown += enterButton_Click;
 
             void enterButton_Click(object? sender, EventArgs e) {
                 try {
@@ -183,9 +184,9 @@ namespace EasyMath_v1 {
                 clearButton.BackColor = Color.LightGoldenrodYellow;
                 clearButton.ForeColor = Color.DarkBlue;
             }
-            void entBut_EnterKey(object? sender, EventArgs e)
-            {
-                
+            void entBut_KeyDown(object? sender, KeyEventArgs e) {
+                if (e.KeyData == Keys.Enter)
+                    enterButton_Click(sender, e);
             }
         }
     }
