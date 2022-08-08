@@ -10,7 +10,8 @@ namespace EasyMath_v1 {
             this.Width = 700;
             this.BackColor = Color.LightGoldenrodYellow;
             this.Text = "EasyCalc";
-            
+            this.KeyPreview = true;
+
             int a = 0;
             int b = 0;
             List<string> memory = new List<string>();
@@ -21,7 +22,7 @@ namespace EasyMath_v1 {
             calcTxtBx.Focus();
             calcTxtBx.Select(0, 0);
             calcTxtBx.ScrollToCaret();
-            calcTxtBx.KeyDown += UserInput;
+            
             calcTxtBx.Font = new Font("Arial", 16);
             calcTxtBx.ForeColor = Color.Gray;
             calcTxtBx.Height = 190;
@@ -54,7 +55,7 @@ namespace EasyMath_v1 {
             this.Controls.Add(fLabel);
 
             MyButton enterButton = new MyButton();
-            //this.AcceptButton = enterButton;
+            this.AcceptButton = enterButton;
             enterButton.Text = "Enter";
             enterButton.Height = 70;
             enterButton.Width = 200;
@@ -66,7 +67,6 @@ namespace EasyMath_v1 {
             enterButton.MouseLeave += entBut_MouseLeave;
             this.Controls.Add(enterButton);
             enterButton.Click += enterButton_Click;
-            enterButton.KeyDown += enterButton_Click;
 
             MyButton exportButton = new MyButton();
             exportButton.Text = "Export";
@@ -80,6 +80,7 @@ namespace EasyMath_v1 {
             exportButton.MouseLeave += expBut_MouseLeave;
             this.Controls.Add(exportButton);
             exportButton.Click += exportButton_Click;
+            calcTxtBx.KeyDown += UserInput;
 
             MyButton clearButton = new MyButton();
             clearButton.Text = "Clear";
@@ -115,11 +116,21 @@ namespace EasyMath_v1 {
                 return result;
             }
             int DiffSqr(int a, int b) {
-                int result = (a - b) * (a * a + a * b + b * b);
+                int result = (a + b) * (a - b);
                 return result;
             }
-            void UserInput(object? sender, EventArgs e) {
-                calcTxtBx.Text = "";
+            void UserInput(object? sender, KeyEventArgs e) {
+                if (e.KeyData == Keys.Enter) {
+                    enterButton.PerformClick();
+                    e.Handled = true;
+                } else {
+                    int textBoxParse;
+                    int.TryParse(calcTxtBx.Text, out textBoxParse);
+                    if (textBoxParse == 0)
+                    {
+                        calcTxtBx.Text = "";
+                    }
+                }
             }
             void entBut_MouseMove(object? sender, EventArgs e) {
                 enterButton.BackColor = Color.CornflowerBlue;
@@ -145,109 +156,69 @@ namespace EasyMath_v1 {
                 clearButton.BackColor = Color.LightGoldenrodYellow;
                 clearButton.ForeColor = Color.DarkBlue;
             }
-            void entBut_KeyDown(object? sender, KeyEventArgs e) {
-                if (e.KeyData == Keys.Enter)
-                    enterButton_Click(sender, e);
-            }
             void enterButton_Click(object? sender, EventArgs e) {
-                try  {
-                    if (a == 0 && b == 0) {
-                        int.TryParse(calcTxtBx.Text, out a);
-                        fLabel.Text = ($"Number \"a\" is: {a}");
-                        if (a != 0 && b == 0) {
-                            calcTxtBx.Text = "Enter number \"b\": ";
-                            calcTxtBx.Focus();
-                            calcTxtBx.Select(0, 0);
-                        }
-                    } else if (a != 0 && b == 0)  {
-                        int.TryParse(calcTxtBx.Text, out b);
-                        fLabel.Text = ($"Number \"b\" is: {b}");
-                        if (a != 0 && b != 0) {
-                            calcTxtBx.Text = "Select formula";
-                            formulaCB.Focus();
-                            calcTxtBx.Select(0, 0);
-                        }
-                    }   else if (a != 0 && b != 0)  {
-                        try  {
-                            switch (formulaCB.SelectedIndex) {
-                                case 0:
-                                    calcTxtBx.Text = $"({a}+{b})\u00B2 = {a}\u00B2 + 2*{a}*{b} + {b}\u00B2 = {SqrSum(a, b).ToString()}";
-                                    fLabel.Text = "( a + b )\u00B2 = a\u00B2 + 2ab + b\u00B2";
-                                    memory.Add(calcTxtBx.Text);
-                                    break;
-                                case 1:
-                                    calcTxtBx.Text = $"({a}-{b})\u00B2 = {a}\u00B2 - 2*{a}*{b} + {b}\u00B2 = {SqrSum(a, b).ToString()}";
-                                    fLabel.Text = "( a - b )\u00B2 = a\u00B2 - 2ab + b\u00B2";
-                                    memory.Add(calcTxtBx.Text);
-                                    break;
-                                case 2:
-                                    calcTxtBx.Text = $"{a}\u00B2 + {b}\u00B2 = ( {a} + {b} )\u00B2 - 2 * {a} * {b}";
-                                    fLabel.Text = "a\u00B2+b\u00B2 = ( a + b )\u00B2 - 2ab";
-                                    memory.Add(calcTxtBx.Text);
-                                    break;
-                                case 3:
-                                    calcTxtBx.Text = $"{a}\u00B2 - {b}\u00B2 = ( {a} + {b} ) * ( {a} - {b} )";
-                                    fLabel.Text = "a\u00B2 - b\u00B2 = ( a + b ) * ( a - b )";
-                                    memory.Add(calcTxtBx.Text);
-                                    break;
-                                default:
-                                    calcTxtBx.Text = "Please select formula first";
-                                    break;
-                            }
-                        }
-                        catch (Exception ex) {
-                            calcTxtBx.Text = "Select formula first";
-                        }
+                if (a == 0 && b == 0) {
+                    int.TryParse(calcTxtBx.Text, out a);
+                    fLabel.Text = ($"Number \"a\" is: {a}");
+                    if (a != 0 && b == 0) {
+                        calcTxtBx.Text = "Enter number \"b\": ";
+                        calcTxtBx.Focus();
+                        calcTxtBx.Select(0, 0);
                     }
                 }
-                catch (Exception ex) {
-                    calcTxtBx.Text = ex.Message;
+                else if (a != 0 && b == 0) {
+                    int.TryParse(calcTxtBx.Text, out b);
+                    fLabel.Text = ($"Number \"b\" is: {b}");
+                    if (a != 0 && b != 0) {
+                        calcTxtBx.Text = "Select formula";
+                        formulaCB.Focus();
+                        calcTxtBx.Select(0, 0);
+                    }
+                }
+                else if (a != 0 && b != 0) {
+                    switch (formulaCB.SelectedIndex) {
+                        case 0:
+                            calcTxtBx.Text = $"({a}+{b})\u00B2 = {a}\u00B2 + 2*{a}*{b} + {b}\u00B2 = {SqrSum(a, b).ToString()}";
+                            fLabel.Text = "( a + b )\u00B2 = a\u00B2 + 2ab + b\u00B2";
+                            memory.Add(calcTxtBx.Text);
+                            break;
+                        case 1:
+                            calcTxtBx.Text = $"({a}-{b})\u00B2 = {a}\u00B2 - 2*{a}*{b} + {b}\u00B2 = {SqrDiff(a, b).ToString()}";
+                            fLabel.Text = "( a - b )\u00B2 = a\u00B2 - 2ab + b\u00B2";
+                            memory.Add(calcTxtBx.Text);
+                            break;
+                        case 2:
+                            calcTxtBx.Text = $"{a}\u00B2 + {b}\u00B2 = ( {a} + {b} )\u00B2 - 2 * {a} * {b} = {SumSqr(a, b).ToString()}";
+                            fLabel.Text = "a\u00B2+b\u00B2 = ( a + b )\u00B2 - 2ab";
+                            memory.Add(calcTxtBx.Text);
+                            break;
+                        case 3:
+                            calcTxtBx.Text = $"{a}\u00B2 - {b}\u00B2 = ( {a} + {b} ) * ( {a} - {b} ) = {DiffSqr(a, b).ToString()}";
+                            fLabel.Text = "a\u00B2 - b\u00B2 = ( a + b ) * ( a - b )";
+                            memory.Add(calcTxtBx.Text);
+                            break;
+                        default:
+                            calcTxtBx.Text = "Please select formula first";
+                            break;
+                    }
                 }
             }
             async void exportButton_Click(object? sender, EventArgs e) {
                 using (StreamWriter sWriter = new StreamWriter(exportFile, true)) {
                     foreach (string line in memory)
                         sWriter.WriteLine(line);
-                    calcTxtBx.Text = "Export completed successfully";
+                    calcTxtBx.Text = "Export successful";
                 }
-            }
-
-            void calcTxtBx_KeyDown(object? sender, KeyEventArgs e)
-            {
-               
-
             }
         }
     }
     delegate void Button_Click(object sender, EventArgs e);
-    
     public class CalcTextBox : TextBox {
-        private Color _borderstyle = Color.DarkSlateGray;
-        public Color borderColor {
-            get { return _borderstyle; }
-            set { _borderstyle = value; }
-        }
     }
     public class MyButton : Button  {
-        
-        
     }
-    public class FormulaCB : ComboBox
-    {
-        enum Formulas
-        {
-            SquareOfSum,
-            SquareOfDiff,
-            SumOfSquares,
-            DiffOfSquares
-        }
-    private void textBox_Changed()
-        {
-
-        }
+    public class FormulaCB : ComboBox {
     }
-    public class FormulaLabel : Label
-    {
-        
+    public class FormulaLabel : Label {
     }
 }

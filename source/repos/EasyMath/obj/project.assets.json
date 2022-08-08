@@ -14,9 +14,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\fatem\\source\\repos\\EasyMath\\EasyMath v1.csproj",
-      "projectName": "EasyMath v1",
-      "projectPath": "C:\\Users\\fatem\\source\\repos\\EasyMath\\EasyMath v1.csproj",
+      "projectUniqueName": "C:\\Users\\fatem\\source\\repos\\EasyMath\\EasyMath.csproj",
+      "projectName": "EasyMath",
+      "projectPath": "C:\\Users\\fatem\\source\\repos\\EasyMath\\EasyMath.csproj",
       "packagesPath": "C:\\Users\\fatem\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\fatem\\source\\repos\\EasyMath\\obj\\",
       "projectStyle": "PackageReference",
