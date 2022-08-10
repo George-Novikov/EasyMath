@@ -22,7 +22,7 @@ namespace EasyMath_v1 {
             calcTxtBx.Focus();
             calcTxtBx.Select(0, 0);
             calcTxtBx.ScrollToCaret();
-            
+            calcTxtBx.Multiline = true;
             calcTxtBx.Font = new Font("Arial", 16);
             calcTxtBx.ForeColor = Color.Gray;
             calcTxtBx.Height = 190;
@@ -38,11 +38,14 @@ namespace EasyMath_v1 {
             formulaCB.Height = 120;
             formulaCB.Width = 250;
             formulaCB.Location = new Point(10, 220);
-            //formulaCB.AutoSize = false;
             formulaCB.Items.Add("Square of sum: (a+b)\u00B2");
             formulaCB.Items.Add("Square of difference: (a-b)\u00B2");
             formulaCB.Items.Add("Sum of squares: a\u00B2+b\u00B2");
             formulaCB.Items.Add("Difference of squares: a\u00B2-b\u00B2");
+            formulaCB.Items.Add("Cube of sum: (a+b)\u00B3");
+            formulaCB.Items.Add("Cube of difference: (a-b)\u00B3");
+            formulaCB.Items.Add("Sum of cubes: a\u00B3 + b\u00B3");
+            formulaCB.Items.Add("Difference of cubes: a\u00B3 - b\u00B3");
             this.Controls.Add(formulaCB);
 
             FormulaLabel fLabel = new FormulaLabel();
@@ -55,6 +58,7 @@ namespace EasyMath_v1 {
             this.Controls.Add(fLabel);
 
             MyButton enterButton = new MyButton();
+            enterButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.AcceptButton = enterButton;
             enterButton.Text = "Enter";
             enterButton.Height = 70;
@@ -65,8 +69,9 @@ namespace EasyMath_v1 {
             enterButton.ForeColor = Color.DarkBlue;
             enterButton.MouseMove += entBut_MouseMove;
             enterButton.MouseLeave += entBut_MouseLeave;
-            this.Controls.Add(enterButton);
             enterButton.Click += enterButton_Click;
+            this.Controls.Add(enterButton);
+            this.KeyDown += UserInput;
 
             MyButton exportButton = new MyButton();
             exportButton.Text = "Export";
@@ -80,7 +85,6 @@ namespace EasyMath_v1 {
             exportButton.MouseLeave += expBut_MouseLeave;
             this.Controls.Add(exportButton);
             exportButton.Click += exportButton_Click;
-            calcTxtBx.KeyDown += UserInput;
 
             MyButton clearButton = new MyButton();
             clearButton.Text = "Clear";
@@ -119,6 +123,22 @@ namespace EasyMath_v1 {
                 int result = (a + b) * (a - b);
                 return result;
             }
+            int CubeSum(int a, int b) {
+                int result = a*a*a + b*b*b + 3*a*b*(a + b);
+                return result;
+            }
+            int CubeDiff(int a, int b) {
+                int result = a * a * a - b * b * b - 3 * a * b * (a - b);
+                return result;
+            }
+            int SumCubes(int a, int b) {
+                int result = (a + b) * (a * a - a * b + b * b);
+                return result;
+            }
+            int DiffCubes(int a, int b) {
+                int result = (a - b) * (a * a + a * b + b * b);
+                return result;
+            }
             void UserInput(object? sender, KeyEventArgs e) {
                 if (e.KeyData == Keys.Enter) {
                     enterButton.PerformClick();
@@ -126,8 +146,7 @@ namespace EasyMath_v1 {
                 } else {
                     int textBoxParse;
                     int.TryParse(calcTxtBx.Text, out textBoxParse);
-                    if (textBoxParse == 0)
-                    {
+                    if (textBoxParse == 0){
                         calcTxtBx.Text = "";
                     }
                 }
@@ -196,6 +215,24 @@ namespace EasyMath_v1 {
                             calcTxtBx.Text = $"{a}\u00B2 - {b}\u00B2 = ( {a} + {b} ) * ( {a} - {b} ) = {DiffSqr(a, b).ToString()}";
                             fLabel.Text = "a\u00B2 - b\u00B2 = ( a + b ) * ( a - b )";
                             memory.Add(calcTxtBx.Text);
+                            break;
+                        case 4:
+                            calcTxtBx.Text = $"({a}+{b})\u00B3 = {a}\u00B3 + {b}\u00B3 + 3 * {a} * {b} * ( {a} + {b} ) = {CubeSum(a, b).ToString()}";
+                            fLabel.Text = "( a + b )\u00B3 = a\u00B3 + b\u00B3 + 3ab( a + b )";
+                            memory.Add(calcTxtBx.Text);
+                            break;
+                        case 5:
+                            calcTxtBx.Text = $"({a}-{b})\u00B3 = {a}\u00B3 - {b}\u00B3 - 3 * {a} * {b} * ( {a} - {b} ) = {CubeDiff(a, b).ToString()}";
+                            fLabel.Text = "( a - b )\u00B3 = a\u00B3 - b\u00B3 - 3ab( a - b )";
+                            memory.Add(calcTxtBx.Text);
+                            break;
+                        case 6:
+                            calcTxtBx.Text = $"{a}\u00B3 + {b}\u00B3 = ( {a} + {b} ) * ( {a}\u00B2 - {a} * {b} + {b}\u00B2)";
+                            fLabel.Text = "a\u00B3 + b\u00B3 = ( a + b )( a\u00B2 - ab + b\u00B2 )";
+                            break;
+                        case 7:
+                            calcTxtBx.Text = $"{a}\u00B3 - {b}\u00B3 = ( {a} - {b} ) * ( {a}\u00B2 + {a} * {b} + {b}\u00B2)";
+                            fLabel.Text = "a\u00B3 - b\u00B3 = ( a - b )( a\u00B2 + ab + b\u00B2 )";
                             break;
                         default:
                             calcTxtBx.Text = "Please select formula first";
